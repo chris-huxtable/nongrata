@@ -96,8 +96,10 @@ module NonGrata
 		puts "  Acquiring:"
 		list.acquire() { |source| puts "    - #{source.label}" }
 
-		digest = OpenSSL::Digest.new("SHA256").file(list.output).digest
-		File.open(list.output, "w+") { |fd|
+		digest = nil
+		digest = OpenSSL::Digest.new("SHA256").file(list.output).digest if ( File.exists?(list.output) )
+
+		File.open(list.output, "r+") { |fd|
 			Process.restrict(EMPTY, USER, GROUP) {
 
 				{% if flag?(:openbsd) %}
@@ -123,17 +125,22 @@ module NonGrata
 		puts "    - #{list.reject_count} rejects"
 	end
 
-	protected def self.write_list(list : List, digest : Bytes, fd : File)
+	protected def self.write_list(list : List, digest : Bytes?, fd : File)
 		puts "  Writing:"
 		out_string = String.build() { |b| list.each_entry() { |entry| b << entry << '\n' }; b << "\n" }
-		new_digest = OpenSSL::Digest.new("SHA256").update(out_string).digest
 
-		if ( new_digest == digest )
-			puts "    - Unchanged: #{list.output}"
-		else
-			fd << out_string
-			puts "    - Wrote Results: #{list.output}"
+		if ( digest )
+			new_digest = OpenSSL::Digest.new("SHA256").update(out_string).digest
+
+			if ( new_digest == digest )
+				puts "    - Unchanged: #{list.output}"
+				puts
+				return
+			end
 		end
+
+		fd << out_string
+		puts "    - Wrote Results: #{list.output}"
 		puts
 	end
 
