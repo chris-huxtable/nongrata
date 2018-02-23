@@ -1,6 +1,6 @@
 # nongrata
 
-Combines several IP lists, process them and outputs a new, safe, reduced, and newline delimited list.
+Aggregates several IP blacklists, validates each entry and outputs a new, safe, reduced, and newline delimited list.
 
 ## Installation
 
