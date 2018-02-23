@@ -20,7 +20,7 @@ PROJECT_SRC		= src/nongrata.cr
 PROJECT_BIN		= bin
 PROJECT_CONF	= sample/nongrata.yaml
 
-INSTALL_BIN		= /usr/local/sbin
+INSTALL_BIN		= /usr/local/bin
 INSTALL_USER	= root
 INSTALL_GROUP	= bin
 INSTALL_MOD		= 0755
@@ -51,7 +51,6 @@ install: release
 	cp ${PROJECT_BIN}/${BIN_NAME} ${INSTALL_BIN}/${BIN_NAME}
 	chown ${INSTALL_USER}:${INSTALL_GROUP} ${INSTALL_BIN}/${BIN_NAME}
 	chmod ${INSTALL_MOD} ${INSTALL_BIN}/${BIN_NAME}
-	chmod ug+s ${INSTALL_BIN}/${BIN_NAME}
 
 	touch ${CONFIG_FILE}
 	chown ${CONFIG_USER}:${CONFIG_GROUP} ${CONFIG_FILE}

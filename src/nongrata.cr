@@ -33,6 +33,11 @@ module NonGrata
 	@@silent : Bool = false
 	@@lists : Hash(String, List) = Hash(String, List).new()
 
+	if ( !Process.root? )
+		puts "Requires user to be root."
+		exit 1
+	end
+
 	{% if flag?(:openbsd) %}
 		#Process.pledge(:stdio, :rpath, :wpath, :cpath, :flock, :unix, :dns, :getpw, :proc, :id)
 	{% end %}
