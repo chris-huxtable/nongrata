@@ -28,7 +28,7 @@ INSTALL_MOD		= 0755
 CONFIG_FILE		= /etc/nongrata.yaml
 CONFIG_USER		= root
 CONFIG_GROUP	= wheel
-CONFIG_MOD		= 0644
+CONFIG_MOD		= 0600
 
 shards:
 	shards update
