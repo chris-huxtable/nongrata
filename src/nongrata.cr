@@ -126,6 +126,7 @@ module NonGrata
 		}
 	end
 
+
 	# MARK: - Properties
 
 	class_property silent : Bool
