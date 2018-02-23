@@ -5,6 +5,8 @@ BlockList:
 
   whitelist:
     - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
 
   sources:
     "Spamhaus Drop List":
@@ -51,12 +53,13 @@ BlockList:
       column: 2
 
 
-
 TorList:
   output: /etc/pf/tor.list
 
   whitelist:
     - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
 
   sources:
 #    "dan.me.uk":
