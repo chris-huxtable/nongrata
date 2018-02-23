@@ -1,7 +1,7 @@
 # File:     sample/nongrata.yaml
 
 BlockList:
-  output: /etc/pf/block.list
+  output: /etc/pf.lists/drop
 
   whitelist:
     - 10.0.0.0/8
@@ -54,7 +54,7 @@ BlockList:
 
 
 TorList:
-  output: /etc/pf/tor.list
+  output: /etc/pf.lists/tor
 
   whitelist:
     - 10.0.0.0/8
