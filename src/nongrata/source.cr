@@ -60,7 +60,7 @@ abstract class Source
 		UNIXSocket.pair { |rooted, forked|
 			proc = Process.restrict(user: NonGrata::USER, group: NonGrata::GROUP, wait: false) {
 				{% if flag?(:openbsd) %}
-					#Process.pledge(:stdio, :inet, :dns, :flock, :unix)
+					Process.pledge(:stdio, :rpath, :wpath, :inet, :dns)
 				{% end %}
 
 				HTTP::Client.get(@url) { |responce|

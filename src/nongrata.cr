@@ -33,12 +33,11 @@ module NonGrata
 	@@silent : Bool = false
 	@@lists : Hash(String, List) = Hash(String, List).new()
 
-	process_args()
-
 	{% if flag?(:openbsd) %}
 		#Process.pledge(:stdio, :rpath, :wpath, :cpath, :flock, :unix, :dns, :getpw, :proc, :id)
 	{% end %}
 
+	process_args()
 	process_config()
 	process_lists()
 
@@ -96,7 +95,7 @@ module NonGrata
 			Process.restrict(EMPTY, USER, GROUP) {
 
 				{% if flag?(:openbsd) %}
-					Process.pledge(:stdio, :rpath, :wpath, :cpath, :flock)
+					Process.pledge(:stdio)
 				{% end %}
 
 				puts "  Processing..."
