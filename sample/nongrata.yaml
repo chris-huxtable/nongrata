@@ -1,0 +1,70 @@
+# File:     sample/nongrata.yaml
+
+BlockList:
+  output: /etc/pf/block.list
+
+  whitelist:
+    - 10.0.0.0/8
+
+  sources:
+    "Spamhaus Drop List":
+      url: https://www.spamhaus.org/drop/drop.txt
+      type: newline
+      comment: ;
+
+    "Spamhaus Extended Drop List":
+      url: https://www.spamhaus.org/drop/edrop.txt
+      type: newline
+      comment: ;
+
+    "Malcode":
+      url: http://malc0de.com/bl/IP_Blacklist.txt
+      type: newline
+      comment: "//"
+
+    "Ransomware Tracker":
+      url: https://ransomwaretracker.abuse.ch/downloads/RW_IPBL.txt
+      type: newline
+
+    "Emerging Threats - Compromised":
+      url: http://rules.emergingthreats.net/blockrules/compromised-ips.txt
+      type: newline
+
+    "Abuse.ch":
+      url: https://sslbl.abuse.ch/blacklist/sslipblacklist.csv
+      type: table
+      column: 0
+
+    "Abuse.ch - Agressive":
+      url: https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv
+      type: table
+      column: 0
+
+    "DShield - Emerging Threats":
+      url: http://feeds.dshield.org/top10-2.txt
+      type: table
+      column: 0
+
+
+TorList:
+  output: /etc/pf/tor.list
+
+  whitelist:
+    - 10.0.0.0/8
+
+  sources:
+#    "dan.me.uk":
+#      url: https://www.dan.me.uk/torlist/
+#      type: newline
+#      delimiter: " "
+
+    "blutmagie.de":
+      url: https://torstatus.blutmagie.de/ip_list_all.php/Tor_ip_list_ALL.csv
+      type: table
+
+    "Tor Project":
+      url: https://check.torproject.org/exit-addresses
+      type: table
+      column: 1
+      delimiter: " "
+      prefix: ExitAddress

@@ -1,0 +1,305 @@
+# File:     sample/countries.yaml
+
+"Afghanistan":
+  output: countries/af.list
+  sources:
+    "NirSoft - Afghanistan":
+      url: http://www.nirsoft.net/countryip/af.csv
+      type: table
+      width: 2
+
+"Albania":
+  output: countries/al.list
+  sources:
+    "NirSoft - Albania":
+      url: http://www.nirsoft.net/countryip/al.csv
+      type: table
+      width: 2
+
+Algeria:
+  output: countries/dz.list
+  sources:
+    "NirSoft - Algeria":
+      url: http://www.nirsoft.net/countryip/dz.csv
+      type: table
+      width: 2
+
+"American Samoa":
+  output: countries/as.list
+  sources:
+    "NirSoft - American Samoa":
+      url: http://www.nirsoft.net/countryip/as.csv
+      type: table
+      width: 2
+
+Andorra:
+  output: countries/ad.list
+  sources:
+    "NirSoft - Andorra":
+      url: http://www.nirsoft.net/countryip/ad.csv
+      type: table
+      width: 2
+
+Angola:
+  output: countries/ao.list
+  sources:
+    "NirSoft - Angola":
+      url: http://www.nirsoft.net/countryip/ao.csv
+      type: table
+      width: 2
+
+"Antigua and Barbuda":
+  output: countries/ag.list
+  sources:
+    "NirSoft - Antigua and Barbuda":
+      url: http://www.nirsoft.net/countryip/ag.csv
+      type: table
+      width: 2
+
+Argentina:
+  output: countries/ar.list
+  sources:
+    "NirSoft - Argentina":
+      url: http://www.nirsoft.net/countryip/ar.csv
+      type: table
+      width: 2
+
+Armenia:
+  output: countries/am.list
+  sources:
+    "NirSoft - Armenia":
+      url: http://www.nirsoft.net/countryip/am.csv
+      type: table
+      width: 2
+
+Aruba:
+  output: countries/aw.list
+  sources:
+    "NirSoft - Aruba":
+      url: http://www.nirsoft.net/countryip/aw.csv
+      type: table
+      width: 2
+
+Australia:
+  output: countries/au.list
+  sources:
+    "NirSoft - Australia":
+      url: http://www.nirsoft.net/countryip/au.csv
+      type: table
+      width: 2
+
+Austria:
+  output: countries/at.list
+  sources:
+    "NirSoft - Austria":
+      url: http://www.nirsoft.net/countryip/at.csv
+      type: table
+      width: 2
+
+Azerbaijan:
+  output: countries/az.list
+  sources:
+    "NirSoft - Azerbaijan":
+      url: http://www.nirsoft.net/countryip/az.csv
+      type: table
+      width: 2
+
+Bahamas:
+  output: countries/bs.list
+  sources:
+    "NirSoft - Bahamas":
+      url: http://www.nirsoft.net/countryip/bs.csv
+      type: table
+      width: 2
+
+Bahrain:
+  output: countries/bh.list
+  sources:
+    "NirSoft - Bahrain":
+      url: http://www.nirsoft.net/countryip/bh.csv
+      type: table
+      width: 2
+
+Bangladesh:
+  output: countries/bd.list
+  sources:
+    "NirSoft - Bangladesh":
+      url: http://www.nirsoft.net/countryip/bd.csv
+      type: table
+      width: 2
+
+Barbados:
+  output: countries/bb.list
+  sources:
+    "NirSoft - Barbados":
+      url: http://www.nirsoft.net/countryip/bb.csv
+      type: table
+      width: 2
+
+Belarus:
+  output: countries/by.list
+  sources:
+    "NirSoft - Belarus":
+      url: http://www.nirsoft.net/countryip/by.csv
+      type: table
+      width: 2
+
+Belgium:
+  output: countries/be.list
+  sources:
+    "NirSoft - Belgium":
+      url: http://www.nirsoft.net/countryip/be.csv
+      type: table
+      width: 2
+
+Belize:
+  output: countries/bz.list
+  sources:
+    "NirSoft - Belize":
+      url: http://www.nirsoft.net/countryip/bz.csv
+      type: table
+      width: 2
+
+Benin:
+  output: countries/bj.list
+  sources:
+    "NirSoft - Benin":
+      url: http://www.nirsoft.net/countryip/bj.csv
+      type: table
+      width: 2
+
+Bermuda:
+  output: countries/bm.list
+  sources:
+    "NirSoft - Bermuda":
+      url: http://www.nirsoft.net/countryip/bm.csv
+      type: table
+      width: 2
+
+Bhutan:
+  output: countries/bt.list
+  sources:
+    "NirSoft - Bhutan":
+      url: http://www.nirsoft.net/countryip/bt.csv
+      type: table
+      width: 2
+
+Bolivia:
+  output: countries/bo.list
+  sources:
+    "NirSoft - Bolivia":
+      url: http://www.nirsoft.net/countryip/bo.csv
+      type: table
+      width: 2
+
+"Bosnia And Herzegovina":
+  output: countries/ba.list
+  sources:
+    "NirSoft - Bosnia And Herzegovina":
+      url: http://www.nirsoft.net/countryip/ba.csv
+      type: table
+      width: 2
+
+Botswana:
+  output: countries/bw.list
+  sources:
+    "NirSoft - Botswana":
+      url: http://www.nirsoft.net/countryip/bw.csv
+      type: table
+      width: 2
+
+Brazil:
+  output: countries/br.list
+  sources:
+    "NirSoft - Brazil":
+      url: http://www.nirsoft.net/countryip/br.csv
+      type: table
+      width: 2
+
+"Brunei Darussalam":
+  output: countries/bn.list
+  sources:
+    "NirSoft - Brunei Darussalam":
+      url: http://www.nirsoft.net/countryip/bn.csv
+      type: table
+      width: 2
+
+Bulgaria:
+  output: countries/bg.list
+  sources:
+    "NirSoft - Bulgaria":
+      url: http://www.nirsoft.net/countryip/bg.csv
+      type: table
+      width: 2
+
+"Burkina Faso":
+  output: countries/bf.list
+  sources:
+    "NirSoft - Burkina Faso":
+      url: http://www.nirsoft.net/countryip/bf.csv
+      type: table
+      width: 2
+
+Burundi:
+  output: countries/bi.list
+  sources:
+    "NirSoft - Burundi":
+      url: http://www.nirsoft.net/countryip/bi.csv
+      type: table
+      width: 2
+
+Cambodia:
+  output: countries/kh.list
+  sources:
+    "NirSoft - Cambodia":
+      url: http://www.nirsoft.net/countryip/kh.csv
+      type: table
+      width: 2
+
+Cameroon:
+  output: countries/cm.list
+  sources:
+    "NirSoft - Cameroon":
+      url: http://www.nirsoft.net/countryip/cm.csv
+      type: table
+      width: 2
+
+Canada:
+  output: countries/ca.list
+  sources:
+    "NirSoft - Canada":
+      url: http://www.nirsoft.net/countryip/ca.csv
+      type: table
+      width: 2
+
+China:
+  output: countries/cn.list
+  sources:
+    "NirSoft - China":
+      url: http://www.nirsoft.net/countryip/cn.csv
+      type: table
+      width: 2
+
+Russia:
+  output: countries/ru.list
+  sources:
+    "NirSoft - Russia":
+      url: http://www.nirsoft.net/countryip/ru.csv
+      type: table
+      width: 2
+
+Ukraine:
+  output: countries/ua.list
+  sources:
+    "NirSoft - Ukraine":
+      url: http://www.nirsoft.net/countryip/ua.csv
+      type: table
+      width: 2
+
+Nigeria:
+  output: countries/ng.list
+  sources:
+    "NirSoft - Nigeria":
+      url: http://www.nirsoft.net/countryip/ng.csv
+      type: table
+      width: 2

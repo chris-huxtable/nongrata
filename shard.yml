@@ -1,0 +1,21 @@
+name: nongrata
+version: 0.1.0
+
+authors:
+  - Chris Huxtable <chris@huxtable.ca>
+
+targets:
+  nongrata:
+    main: src/nongrata.cr
+
+dependencies:
+  ch_socket:
+    github: chris-huxtable/ch_socket.cr
+  pledge:
+    github: chris-huxtable/pledge.cr
+  restrict:
+    github: chris-huxtable/restrict.cr
+
+crystal: 0.24.1
+
+license: ISC
