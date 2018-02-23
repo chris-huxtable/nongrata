@@ -45,6 +45,12 @@ BlockList:
       type: table
       column: 0
 
+    "IPSpamList":
+      url: http://www.ipspamlist.com/public_feeds.csv
+      type: table
+      column: 2
+
+
 
 TorList:
   output: /etc/pf/tor.list
