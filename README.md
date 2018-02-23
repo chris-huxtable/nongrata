@@ -21,9 +21,9 @@ Cron Usage:
 nongrata -s
 ```
 
-Cron Usage + `PF`:
+Cron Usage + `pf`:
 ```
-nongrata -s && (pfctl -t tablename -T replace -f /etc/pf/name.list)
+nongrata -s && (pfctl -t drop -T replace -f /etc/pf.list/drop)
 ```
 
 ## Contributing
