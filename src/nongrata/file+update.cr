@@ -26,29 +26,30 @@ class File
 		}
 	end
 
-	def self.update(io : File, buffer = 64, &block : IO -> Nil) : Bool
+	def self.update(fd : File, buffer = 64, &block : IO -> Nil) : Bool
 		buffer = String.build(buffer) { |io| yield(io) }
 
-		return false if ( !compare?(io, buffer) )
+		return false if ( !diff?(fd, buffer) )
 
-		io << buffer
+		fd << buffer
 		return true
 	end
 
-	def self.compare?(filename : String, string : String) : Bool
+	def self.diff?(filename : String, string : String) : Bool
 		raise "File not readable" if ( !readable?(filename) )
 		return false if ( size(filename) != string.size )
 
 		open(filename, "r") { |fd|
-			return compare?(fd, string)
+			return diff?(fd, string)
 		}
 		raise "An error occurred... "
 	end
 
-	def self.compare?(io : IO::FileDescriptor, string : String) : Bool
-		io.seek(0) {
+	def self.diff?(fd : File, string : String): Bool
+		return false if ( fd.size != string.size )
+		fd.seek(0) {
 			idx = 0
-			io.each_char() { |c|
+			fd.each_char() { |c|
 				return false if ( c != string[idx] )
 				idx += 1
 			}
