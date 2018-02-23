@@ -97,7 +97,11 @@ module NonGrata
 		list.acquire() { |source| puts "    - #{source.label}" }
 
 		digest = nil
-		digest = OpenSSL::Digest.new("SHA256").file(list.output).digest if ( File.exists?(list.output) )
+		if ( File.exists?(list.output) )
+			digest = OpenSSL::Digest.new("SHA256").file(list.output).digest
+		else
+			File.write(list.output, "")
+		end
 
 		File.open(list.output, "r+") { |fd|
 			Process.restrict(EMPTY, USER, GROUP) {
