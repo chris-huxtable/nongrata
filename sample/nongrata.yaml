@@ -32,15 +32,15 @@ BlockList:
       url: http://rules.emergingthreats.net/blockrules/compromised-ips.txt
       type: newline
 
-    "Abuse.ch":
-      url: https://sslbl.abuse.ch/blacklist/sslipblacklist.csv
-      type: table
-      column: 0
-
-    "Abuse.ch - Agressive":
-      url: https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv
-      type: table
-      column: 0
+#    "Abuse.ch":
+#      url: https://sslbl.abuse.ch/blacklist/sslipblacklist.csv
+#      type: table
+#      column: 0
+#
+#    "Abuse.ch - Agressive":
+#      url: https://sslbl.abuse.ch/blacklist/sslipblacklist_aggressive.csv
+#      type: table
+#      column: 0
 
     "DShield - Emerging Threats":
       url: http://feeds.dshield.org/top10-2.txt
