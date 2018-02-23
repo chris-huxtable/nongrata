@@ -168,18 +168,8 @@ class List
 		}
 	end
 
-	def write(path = @output) : Bool
-		File.open(path, "w+") { |fd|
-			return write(fd)
-		}
-	end
 
-	def write(fd : IO::FileDescriptor) : Bool
-		buffer_size = 8*@addresses.size + 11*@blocks.size
-		File.update(fd, buffer: buffer_size) { |fd|
-			each_entry() { |entry| fd << entry << '\n' }
-		}
-	end
+	# MARK: - Utilities
 
 	protected def block_whitelisted?(block)
 		@whitelist.each() { |white|
