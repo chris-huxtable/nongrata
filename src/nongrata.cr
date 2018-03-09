@@ -103,7 +103,7 @@ module NonGrata
 			File.write(list.output, "")
 		end
 
-		File.open(list.output, "r+") { |fd|
+		File.open(list.output, "w+") { |fd|
 			Process.restrict(EMPTY, USER, GROUP) {
 
 				{% if flag?(:openbsd) %}
@@ -131,7 +131,7 @@ module NonGrata
 
 	protected def self.write_list(list : List, digest : Bytes?, fd : File)
 		puts "  Writing:"
-		out_string = String.build() { |b| list.each_entry() { |entry| b << entry << '\n' }; b << "\n" }
+		out_string = String.build() { |b| list.each_entry() { |entry| b << entry << '\n' } }
 
 		if ( digest )
 			new_digest = OpenSSL::Digest.new("SHA256").update(out_string).digest
