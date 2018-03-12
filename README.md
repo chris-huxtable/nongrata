@@ -23,7 +23,7 @@ nongrata -s
 
 Cron Usage + `pf`:
 ```
-nongrata -s && (pfctl -t drop -T replace -f /etc/pf.list/drop)
+nongrata -c && (pfctl -t drop -T replace -f /etc/pf.list/drop)
 ```
 
 ## Contributing

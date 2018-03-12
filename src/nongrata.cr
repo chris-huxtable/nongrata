@@ -55,7 +55,7 @@ module NonGrata
 		OptionParser.parse! { |parser|
 			parser.banner = "Usage: logsite [arguments]"
 			parser.on("-f file", "Specifies the configuration file. The default is #{config_path}.") { |file| config_path = file }
-			parser.on("-s", "silences the applications output. Useful for cron.") { @@silent = true }
+			parser.on("-c", "silences the applications output. Useful for cron.") { @@silent = true }
 			parser.on("-h", "--help", "Show this help") { puts parser }
 		}
 
