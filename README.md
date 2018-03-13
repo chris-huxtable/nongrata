@@ -18,7 +18,7 @@ nongrata
 
 Cron Usage:
 ```
-nongrata -s
+nongrata -c
 ```
 
 Cron Usage + `pf`:
