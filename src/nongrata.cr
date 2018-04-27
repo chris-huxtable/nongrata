@@ -13,7 +13,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 require "option_parser"
-require "yaml"
+require "config"
 
 require "ch_socket/ip/address"
 require "ch_socket/ip/block"
@@ -29,7 +29,7 @@ module NonGrata
 	GROUP = "daemon"
 	EMPTY = "/var/empty"
 
-	@@config_path : String = "/etc/nongrata.yaml"
+	@@config_path : String = "/etc/nongrata.conf"
 	@@silent : Bool = false
 	@@lists : Hash(String, List) = Hash(String, List).new()
 
@@ -67,15 +67,16 @@ module NonGrata
 	# MARK: - Process Configuration
 
 	def self.process_config()
-		config = YAML.parse_file(@@config_path)
+		config = Config.file(@@config_path)
+
 		lists = config.as_h?
 		raise "Configuration has errors." if ( !lists )
 
 		lists.each() { |key, value|
-			key = YAML::Any.new(key).to_s
-			next if key == "user" || key == "group"
+			#key = Config::Any.new(key).to_s
+			next if ( key == "user" || key == "group" )
 
-			value = List.from_yaml(key, YAML::Any.new(value))
+			value = List.from_config(key, value)
 			raise "Configuration has errors. No list" if ( !value )
 			@@lists[key] = value
 		}

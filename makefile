@@ -18,27 +18,27 @@ BIN_NAME		= nongrata
 
 PROJECT_SRC		= src/nongrata.cr
 PROJECT_BIN		= bin
-PROJECT_CONF	= sample/nongrata.yaml
+PROJECT_CONF	= sample/nongrata.conf
 
 INSTALL_BIN		= /usr/local/bin
 INSTALL_USER	= root
 INSTALL_GROUP	= bin
 INSTALL_MOD		= 0755
 
-CONFIG_FILE		= /etc/nongrata.yaml
+CONFIG_FILE		= /etc/nongrata.conf
 CONFIG_USER		= root
 CONFIG_GROUP	= wheel
 CONFIG_MOD		= 0600
+
+build:
+	mkdir -p bin
+	${CRYSTAL_BIN} build ${PROJECT_SRC} -o ${PROJECT_BIN}/${BIN_NAME}
 
 shards:
 	shards update
 
 debug:
-	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f sample/nongrata.yaml
-
-build:
-	mkdir -p bin
-	${CRYSTAL_BIN} build ${PROJECT_SRC} -o ${PROJECT_BIN}/${BIN_NAME}
+	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f ${PROJECT_CONF}
 
 release:
 	mkdir -p bin

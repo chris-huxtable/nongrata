@@ -1,5 +1,5 @@
 name: nongrata
-version: 0.1.0
+version: 0.2.0
 
 authors:
   - Chris Huxtable <chris@huxtable.ca>
@@ -15,7 +15,9 @@ dependencies:
     github: chris-huxtable/pledge.cr
   restrict:
     github: chris-huxtable/restrict.cr
+  config:
+    github: chris-huxtable/config.cr
 
-crystal: 0.24.1
+crystal: 0.24.2
 
 license: ISC

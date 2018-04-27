@@ -18,31 +18,29 @@ class List
 
 	# MARK: - Constructors
 
-	def self.from_yaml(label : String, yaml : YAML::Any) : self?
-
-		# Whitelist
-		whitelist = yaml.extract_array?("whitelist", String)
-		if ( whitelist )
-			whitelist = whitelist.map() { |entry|
-				next IP::Address[entry]? || IP::Block[entry]? || raise "Configuration has errors: Whitelist"
-			}
-		end
+	def self.from_config(label : String, config : Config::Any) : self?
 
 		# Output
-		tmp = yaml.extract?("output", String)
+		tmp = config.as_s?("output")
 		return nil if ( !tmp || tmp.empty? )
 		output = File.expand_path(tmp)
 
 		list = build(label, output) { |list|
-			list.whitelist = whitelist if ( whitelist )
 
-			sources = yaml["sources"]?
-			raise "Configuration has errors. No Sources" if ( !sources )
-			sources = sources.as_h?
+			# Whitelist
+			if ( whitelist = config.as_a?("whitelist", String) )
+				whitelist = whitelist.map() { |entry|
+					next IP::Address[entry]? || IP::Block[entry]? || raise "Configuration has errors: Whitelist"
+				}
+				list.whitelist = whitelist
+			end
+
+			# Sources
+			sources = config.as_h?("sources")
 			raise "Configuration has errors. No Sources" if ( !sources )
 
-			sources.each() { |key, yaml2|
-				list.sources << Source.from_yaml(key.to_s, YAML::Any.new(yaml2))
+			sources.each() { |key, src_config|
+				list.sources << Source.from_config(key.to_s, src_config)
 			}
 		}
 

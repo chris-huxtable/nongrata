@@ -20,13 +20,13 @@ abstract class Source
 	@comment : String|Char = '#'
 	@cache : String? = nil
 
-	def self.from_yaml(label : String, yaml : YAML::Any) : self
-		type = yaml.extract?("type", String)
-		type = "newline" if ( !type )
+	def self.from_config(label : String, config : Config::Any) : self
+		a_type = config.as_s?("type")
+		a_type = "newline" if ( !a_type )
 
-		return case ( type.downcase )
-			when "newline" then Newline.from_yaml(label, yaml)
-			when "table" then Table.from_yaml(label, yaml)
+		return case ( a_type.downcase )
+			when "newline"	then Newline.from_config(label, config)
+			when "table"	then Table.from_config(label, config)
 			else raise "Malformed Configuration: Invalid type"
 		end
 	end
@@ -138,14 +138,14 @@ abstract class Source
 
 	class Newline < Source
 
-		def self.from_yaml(label : String, yaml : YAML::Any) : self
-			tmp = yaml.extract?("url", String)
+		def self.from_config(label : String, config : Config::Any) : self
+			tmp = config.as_s?("url")
 			raise "Malformed Configuration: Source missing url" if ( !tmp || tmp.empty? )
 			url = tmp
 
 			source = new(label, url)
 
-			tmp = yaml.extract?("comment", String)
+			tmp = config.as_s?("comment")
 			source.comment = tmp if ( tmp && !tmp.empty? )
 
 			return source
@@ -163,22 +163,22 @@ abstract class Source
 		@column : UInt32 = 0_u32
 		@width : UInt32? = nil
 
-		def self.from_yaml(label : String, yaml : YAML::Any) : self
-			source = super(label, yaml)
+		def self.from_config(label : String, config : Config::Any) : self
+			source = super(label, config)
 
-			tmp = yaml.extract?("delimiter", String)
+			tmp = config.as_s?("delimiter")
 			source.delimiter = tmp if ( tmp && !tmp.empty?() )
 
-			tmp = yaml.extract?("column", Int64)
+			tmp = config.as_i64?("column")
 			source.column = tmp.to_u32 if ( tmp )
 
-			tmp = yaml.extract?("width", Int64)
+			tmp = config.as_i64?("width")
 			source.width = tmp.to_u32 if ( tmp )
 
-			tmp = yaml.extract?("prefix", String)
+			tmp = config.as_s?("prefix")
 			source.prefix = tmp if ( tmp && !tmp.empty?() )
 
-			tmp = yaml.extract?("suffix", String)
+			tmp = config.as_s?("suffix")
 			source.suffix = tmp if ( tmp && !tmp.empty?() )
 
 			return source
