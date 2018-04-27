@@ -22,11 +22,11 @@ abstract class Source
 
 	def self.from_config(label : String, config : Config::Any) : self
 		a_type = config.as_s?("type")
-		a_type = "newline" if ( !a_type )
+		a_type = "list" if ( !a_type )
 
 		return case ( a_type.downcase )
-			when "newline"	then Newline.from_config(label, config)
-			when "table"	then Table.from_config(label, config)
+			when "list"		then Source::List.from_config(label, config)
+			when "table"	then Source::Table.from_config(label, config)
 			else raise "Malformed Configuration: Invalid type"
 		end
 	end
@@ -136,7 +136,9 @@ abstract class Source
 		return line[0, offset]
 	end
 
-	class Newline < Source
+	class List < Source
+
+		@entry_delimiter : Char|String = '\n'
 
 		def self.from_config(label : String, config : Config::Any) : self
 			tmp = config.as_s?("url")
@@ -148,14 +150,19 @@ abstract class Source
 			tmp = config.as_s?("comment")
 			source.comment = tmp if ( tmp && !tmp.empty? )
 
+			tmp = config.as_s?("delimiter")
+			source.entry_delimiter = tmp if ( tmp && !tmp.empty?() )
+
 			return source
 		end
 
+		property entry_delimiter : Char|String
+
 	end
 
-	class Table < Newline
+	class Table < List
 
-		@delimiter : Char|String = ','
+		@column_delimiter : Char|String = ','
 
 		@prefix : Char|String|Nil = nil
 		@suffix : Char|String|Nil = nil
@@ -167,7 +174,7 @@ abstract class Source
 			source = super(label, config)
 
 			tmp = config.as_s?("delimiter")
-			source.delimiter = tmp if ( tmp && !tmp.empty?() )
+			source.column_delimiter = tmp if ( tmp && !tmp.empty?() )
 
 			tmp = config.as_i64?("column")
 			source.column = tmp.to_u32 if ( tmp )
@@ -184,7 +191,7 @@ abstract class Source
 			return source
 		end
 
-		property delimiter : Char|String
+		property column_delimiter : Char|String
 
 		property prefix : Char|String|Nil
 		property suffix : Char|String|Nil
@@ -199,7 +206,7 @@ abstract class Source
 			suffix = @suffix
 			return nil if ( suffix && !line.ends_with?(suffix) )
 
-			line = line.split(@delimiter)
+			line = line.split(@column_delimiter)
 
 			address = line[@column]?
 			return nil if !address
