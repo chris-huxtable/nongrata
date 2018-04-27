@@ -2,7 +2,10 @@
 
 Aggregates multiple IP blacklists, validates each entry and outputs a new, sanitized, and reduced, newline delimited list.
 
-`nongrata` is already very safe as it only connects to services you think are reputable. That being said we have to assume it has serious bugs in its own code or the underlying libraries that are exploitable. As such it is privilege separated, `chroot`ed, and on OpenBSD `pledge`d. In the event that someone attempts to exploit a bug they will have trouble, won't get far, or will outright kill the process.
+`nongrata` is already very safe as it only connects to services you think are reputable. That being said we have to assume it has serious bugs in its own code and that the underlying libraries are exploitable. As such it is privilege separated, `chroot`ed, and on OpenBSD `pledge`d. In the event that someone attempts to exploit a bug they will have trouble, won't get far, or will outright kill the process.
+
+Note: Currently only IPv4 addresses are supported.
+
 
 ## Installation
 
@@ -10,6 +13,7 @@ Aggregates multiple IP blacklists, validates each entry and outputs a new, sanit
 sudo make install
 make clean
 ```
+
 
 ## Usage
 
@@ -28,13 +32,68 @@ Cron Usage + `pf`:
 nongrata -c && (pfctl -q -t drop -T replace -f /etc/pf.list/drop)
 ```
 
+
 ## Configuration
 
 There are included sample configurations under the sample subdirectory.
 
 I recommend whitelisting your LAN block, WAN address, and any other known good addresses or blocks. This will prevent them from being on the resultant list.
 
-The configuration file is likely to change in a following version.
+### Lists:
+The configuration is a collection of named lists you would like to construct. Each List should contain an `output` where the list will be written and optionally a `whitelist`, which can contain addresses or address blocks which will not be allowed in the resulting list. Additioanlly It needs to contain a collection of named sources from which to get the source data.
+
+- `output`: *string*
+- `whitelist`: \[ *optional*, *list*, *of*, *addresses*, *and*, *blocks* \]
+
+```
+BadGuyList: {
+	output: /etc/pf.lists/badguys
+	whitelist: [ "10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16" ]
+	sources: {
+		// Your collection of named sources.
+	}
+}
+```
+
+### Sources:
+Sources can currently be 1 of 2 types, `list` or `table`.  By default if type is not specified `list` is used. Both types have the `url` key which contains the url for the source.
+
+A source which is a `list` is (by default) a newline delimited list of addresses and blocks. With this type you also have the option of selecting the entry delimiter with the `delimiter` key (by default a newline), as well as the  comment style with the `comment` key (by default a `#`).
+
+- `url`: *url string*
+- `type`: list
+- `delimiter`: *string* # by default \n
+- `comment`: *string* # by defualt \#
+
+```
+Spamhaus: {
+	url: https://www.spamhaus.org/drop/drop.txt
+	type: list
+	comment: ;
+}
+```
+
+A source which is a `table` is  a table with newline delimited rows where a column contains an address or  block. With this type you also have the option of selecting the column whcih will be interpreted as an address or block with the `column` key (by default 0), the column delimiter with the `delimiter` key (by default a comma),  the  comment style with the `comment` key (by default a `#`), and selectors of a line based on the lines prefix, or suffix using the keys `prefix`, and `suffix` respectivly.
+
+- `url`: *url string*
+- `type`: table
+- `column`: *integer* # 0-n
+- `delimiter`: *string* # by default ,
+- `comment`: *string* # by defualt \#
+- `prefix`:  *string* # disabled by default
+- `suffix`: *string* # disabled by default
+
+```
+Tor: {
+	url: https://check.torproject.org/exit-addresses
+	type: table
+	column: 1
+	delimiter: " "
+	prefix: ExitAddress
+	suffix: nil
+}
+```
+
 
 ## Contributing
 
