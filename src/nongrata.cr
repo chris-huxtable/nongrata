@@ -15,13 +15,14 @@
 require "option_parser"
 require "config"
 
-require "ch_socket/ip/address"
-require "ch_socket/ip/block"
+require "ip_address"
 
 require "pledge"
 require "restrict"
+require "user_group"
 
 require "./nongrata/*"
+
 
 module NonGrata
 
@@ -38,9 +39,9 @@ module NonGrata
 		exit 1
 	end
 
-	{% if flag?(:openbsd) %}
-		#Process.pledge(:stdio, :rpath, :wpath, :cpath, :flock, :unix, :dns, :getpw, :proc, :id)
-	{% end %}
+#	{% if flag?(:openbsd) %}
+#		Process.pledge(:stdio, :rpath, :wpath, :cpath, :flock, :unix, :dns, :getpw, :proc, :id)
+#	{% end %}
 
 	process_args()
 	process_config()
@@ -53,7 +54,7 @@ module NonGrata
 		config_path = @@config_path
 
 		OptionParser.parse! { |parser|
-			parser.banner = "Usage: logsite [arguments]"
+			parser.banner = "Usage: nongrata [arguments]"
 			parser.on("-f file", "Specifies the configuration file. The default is #{config_path}.") { |file| config_path = file }
 			parser.on("-c", "silences the applications output. Useful for cron.") { @@silent = true }
 			parser.on("-h", "--help", "Show this help") { puts parser }
@@ -73,7 +74,6 @@ module NonGrata
 		raise "Configuration has errors." if ( !lists )
 
 		lists.each() { |key, value|
-			#key = Config::Any.new(key).to_s
 			next if ( key == "user" || key == "group" )
 
 			value = List.from_config(key, value)

@@ -15,7 +15,7 @@
 require "socket"
 require "http"
 
-abstract class Source
+abstract class NonGrata::Source
 
 	@comment : String|Char = '#'
 	@cache : String? = nil
@@ -59,17 +59,20 @@ abstract class Source
 
 		UNIXSocket.pair { |rooted, forked|
 			proc = Process.restrict(user: NonGrata::USER, group: NonGrata::GROUP, wait: false) {
+
 				{% if flag?(:openbsd) %}
 					Process.pledge(:stdio, :rpath, :wpath, :inet, :dns)
 				{% end %}
 
 				HTTP::Client.get(@url) { |responce|
-
 					IO.copy(responce.body_io, forked)
 					forked.puts("\0")
 				}
+
 				forked.close
 			}
+
+			raise "Missing child process" if ( !proc )
 
 			cache = String.build() { |builder|
 				while line = rooted.gets
@@ -83,8 +86,8 @@ abstract class Source
 		}
 
 		raise "Caching failed" if !cache
-
 		@cache = cache
+
 		return cache
 	end
 

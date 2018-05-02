@@ -14,7 +14,7 @@
 
 require "./source"
 
-class List
+class NonGrata::List
 
 	# MARK: - Constructors
 

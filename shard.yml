@@ -9,14 +9,16 @@ targets:
     main: src/nongrata.cr
 
 dependencies:
-  ch_socket:
-    github: chris-huxtable/ch_socket.cr
+  config:
+    github: chris-huxtable/config.cr
+  ip_address:
+    github: chris-huxtable/ip_address.cr
   pledge:
     github: chris-huxtable/pledge.cr
   restrict:
     github: chris-huxtable/restrict.cr
-  config:
-    github: chris-huxtable/config.cr
+  user_group:
+    github: chris-huxtable/user_group.cr
 
 crystal: 0.24.2
 
