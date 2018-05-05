@@ -19,6 +19,7 @@ BIN_NAME		= nongrata
 PROJECT_SRC		= src/nongrata.cr
 PROJECT_BIN		= bin
 PROJECT_CONF	= sample/nongrata.conf
+PROJECT_FAKE	= fake
 
 INSTALL_BIN		= /usr/local/bin
 INSTALL_USER	= root
@@ -31,21 +32,16 @@ CONFIG_GROUP	= wheel
 CONFIG_MOD		= 0600
 
 build:
-	mkdir -p bin
+	@mkdir -p bin
 	${CRYSTAL_BIN} build ${PROJECT_SRC} -o ${PROJECT_BIN}/${BIN_NAME}
 
-shards:
-	shards update
-
-debug:
-	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f ${PROJECT_CONF}
-
 release:
-	mkdir -p bin
+	@mkdir -p bin
 	${CRYSTAL_BIN} build ${PROJECT_SRC} --release -o ${PROJECT_BIN}/${BIN_NAME}
 
-clean:
-	rm -fR ${PROJECT_BIN}
+debug:
+	@mkdir -p fake
+	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f ${PROJECT_CONF}
 
 install: release
 	cp ${PROJECT_BIN}/${BIN_NAME} ${INSTALL_BIN}/${BIN_NAME}
@@ -58,3 +54,13 @@ install: release
 
 uninstall:
 	rm ${INSTALL_BIN}/${BIN_NAME}
+
+shards:
+	shards update
+	shards prune
+
+clean:
+	rm -fR ${PROJECT_BIN}
+	rm -fR ${PROJECT_FAKE}
+	shards prune
+	find . -name ".DS_Store" -depth -exec rm {} \;

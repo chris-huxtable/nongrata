@@ -6,3 +6,5 @@
 
 /shard.lock
 .DS_Store
+
+/fake/
