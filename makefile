@@ -35,7 +35,7 @@ build:
 	@mkdir -p bin
 	${CRYSTAL_BIN} build ${PROJECT_SRC} -o ${PROJECT_BIN}/${BIN_NAME}
 
-release:
+release: shards
 	@mkdir -p bin
 	${CRYSTAL_BIN} build ${PROJECT_SRC} --release -o ${PROJECT_BIN}/${BIN_NAME}
 
