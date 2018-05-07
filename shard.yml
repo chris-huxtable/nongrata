@@ -11,14 +11,19 @@ targets:
 dependencies:
   config:
     github: chris-huxtable/config.cr
+    commit: HEAD
   ip_address:
     github: chris-huxtable/ip_address.cr
+    commit: HEAD
   pledge:
     github: chris-huxtable/pledge.cr
+    commit: HEAD
   restrict:
     github: chris-huxtable/restrict.cr
+    commit: HEAD
   user_group:
     github: chris-huxtable/user_group.cr
+    commit: HEAD
 
 crystal: 0.24.2
 
