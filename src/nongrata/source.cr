@@ -21,6 +21,10 @@ abstract class NonGrata::Source
 	@cache : String? = nil
 
 	def self.from_config(label : String, config : Config::Any) : self
+		if ( url = config.as_s?() )
+			return Source::List.new(label, url)
+		end
+
 		a_type = config.as_s?("type")
 		a_type = "list" if ( !a_type )
 
