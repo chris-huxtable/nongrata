@@ -1,6 +1,8 @@
 name: nongrata
 version: 0.3.1
 
+crystal: 0.24.2
+
 authors:
   - Chris Huxtable <chris@huxtable.ca>
 
@@ -24,7 +26,5 @@ dependencies:
   user_group:
     github: chris-huxtable/user_group.cr
     commit: HEAD
-
-crystal: 0.24.2
 
 license: ISC

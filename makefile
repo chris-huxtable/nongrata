@@ -18,8 +18,6 @@ BIN_NAME		= nongrata
 
 PROJECT_SRC		= src/nongrata.cr
 PROJECT_BIN		= bin
-PROJECT_CONF	= sample/nongrata.conf
-PROJECT_FAKE	= fake
 
 INSTALL_BIN		= /usr/local/bin
 INSTALL_USER	= root
@@ -31,6 +29,9 @@ CONFIG_USER		= root
 CONFIG_GROUP	= wheel
 CONFIG_MOD		= 0600
 
+DEBUG_CONF		= sample/countries.conf
+DEBUG_DIR		= fake
+
 build:
 	@mkdir -p bin
 	${CRYSTAL_BIN} build ${PROJECT_SRC} -o ${PROJECT_BIN}/${BIN_NAME}
@@ -40,8 +41,9 @@ release: shards
 	${CRYSTAL_BIN} build ${PROJECT_SRC} --release -o ${PROJECT_BIN}/${BIN_NAME}
 
 debug:
-	@mkdir -p fake
-	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f ${PROJECT_CONF}
+	@rm -fR ${DEBUG_DIR}
+	@mkdir -p ${DEBUG_DIR}
+	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f ${DEBUG_CONF}
 
 install: release
 	cp ${PROJECT_BIN}/${BIN_NAME} ${INSTALL_BIN}/${BIN_NAME}
