@@ -42,6 +42,12 @@ class NonGrata::List
 			sources.each() { |key, src_config|
 				list.sources << Source.from_config(key.to_s, src_config)
 			}
+
+			# Header
+			if ( header = config.as_s?("header") )
+				list.header = header
+			end
+
 		}
 
 		return list
@@ -69,6 +75,8 @@ class NonGrata::List
 
 	# MARK: - Properties
 
+	@header : String? = nil
+
 	@sources	= Array(Source).new()
 	@whitelist	= Array(IP::Address|IP::Block).new()
 
@@ -79,6 +87,7 @@ class NonGrata::List
 
 	property label : String
 	property output : String
+	property header : String?
 
 	property sources : Array(Source)
 	property whitelist : Array(IP::Address|IP::Block)
