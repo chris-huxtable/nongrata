@@ -11,6 +11,9 @@ targets:
     main: src/nongrata.cr
 
 dependencies:
+  atomic_write:
+    github: chris-huxtable/atomic_write.cr
+    commit: HEAD
   config:
     github: chris-huxtable/config.cr
     commit: HEAD
