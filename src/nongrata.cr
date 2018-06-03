@@ -12,6 +12,7 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+require "atomic_write"
 require "option_parser"
 require "config"
 
@@ -86,7 +87,10 @@ module NonGrata
 	# MARK: - Process Lists
 
 	def self.process_lists()
-		@@lists.each{ |key, list| process_list(list) }
+		@@lists.each{ |key, list|
+			process_list(list)
+			puts
+		}
 	end
 
 	protected def self.process_list(list : List)
@@ -97,56 +101,35 @@ module NonGrata
 		puts "  Acquiring:"
 		list.acquire() { |source| puts "    - #{source.label}" }
 
-		digest = nil
-		if ( File.exists?(list.output) )
-			digest = OpenSSL::Digest.new("SHA256").file(list.output).digest
-		else
-			File.write(list.output, "")
-		end
+		a, b = UNIXSocket.pair()
 
 		File.open(list.output, "w+") { |fd|
-			Process.restrict(EMPTY, USER, GROUP) {
-
+			Process.restrict(EMPTY, USER, GROUP, wait: false) {
 				{% if flag?(:openbsd) %}
 					Process.pledge(:stdio)
 				{% end %}
 
-				puts "  Processing..."
 				list.process()
-
-				puts "  Reducing..."
 				list.reduce()
 
-				put_counts(list)
-				write_list(list, digest, fd)
+				puts "  Counts:"
+				puts "    - #{list.addresses.size} addresses"
+				puts "    - #{list.blocks.size} blocks"
+				puts "    - #{list.reject_count} rejects"
+
+				list.each_entry() { |entry| a << entry << '\n' }
 			}
+
+			a.close
+			IO.copy(b, fd)
+			b.close
+
+			puts "  Writing:"
+			puts "    - Wrote Results: #{list.output}"
 		}
-	end
-
-	protected def self.put_counts(list : List)
-		puts "  Counts:"
-		puts "    - #{list.addresses.size} addresses"
-		puts "    - #{list.blocks.size} blocks"
-		puts "    - #{list.reject_count} rejects"
-	end
-
-	protected def self.write_list(list : List, digest : Bytes?, fd : File)
-		puts "  Writing:"
-		out_string = String.build() { |b| list.each_entry() { |entry| b << entry << '\n' } }
-
-		if ( digest )
-			new_digest = OpenSSL::Digest.new("SHA256").update(out_string).digest
-
-			if ( new_digest == digest )
-				puts "    - Unchanged: #{list.output}"
-				puts
-				return
-			end
-		end
-
-		fd << out_string
-		puts "    - Wrote Results: #{list.output}"
-		puts
+	ensure
+		a.close if ( a )
+		b.close if ( b )
 	end
 
 

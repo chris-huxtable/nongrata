@@ -29,7 +29,7 @@ CONFIG_USER		= root
 CONFIG_GROUP	= wheel
 CONFIG_MOD		= 0600
 
-DEBUG_CONF		= sample/countries.conf
+DEBUG_CONF		= sample/nongrata.conf
 DEBUG_DIR		= fake
 
 build:
@@ -43,7 +43,7 @@ release: shards
 debug:
 	@rm -fR ${DEBUG_DIR}
 	@mkdir -p ${DEBUG_DIR}
-	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f ${DEBUG_CONF}
+	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace --verbose -- -f ${DEBUG_CONF}
 
 install: release
 	cp ${PROJECT_BIN}/${BIN_NAME} ${INSTALL_BIN}/${BIN_NAME}
