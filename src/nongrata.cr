@@ -32,6 +32,10 @@ module NonGrata
 	GROUP = "daemon"
 	EMPTY = "/var/empty"
 
+	{% begin %}
+		BUILD = {{ `git log --pretty=format:'%H' -n 1`.stringify }}
+	{% end %}
+
 	@@config_path : String = "/etc/nongrata.conf"
 	@@silent : Bool = false
 	@@lists : Hash(String, List) = Hash(String, List).new()
@@ -59,6 +63,10 @@ module NonGrata
 			parser.banner = "Usage: nongrata [arguments]"
 			parser.on("-f file", "Specifies the configuration file. The default is #{config_path}.") { |file| config_path = file }
 			parser.on("-c", "--cron", "silences the applications output. Useful for cron.") { @@silent = true }
+			parser.on("-v", "--version", "Show the version number.") {
+				puts "Nongrata #{version_string}"
+				exit(0)
+			}
 			parser.on("-h", "--help", "Show this help.") {
 				puts parser
 				exit(0)
@@ -151,6 +159,15 @@ module NonGrata
 
 	class_property silent : Bool
 	class_property config_path : String
+
+	def self.version_string()
+		return String.build() { |io| version_string(io) }
+	end
+
+	def self.version_string(io : IO)
+		io << 'v' << "0.3.2"
+		io << " (" << BUILD[0..7] << ')'
+	end
 
 
 	# MARK: - Tools
