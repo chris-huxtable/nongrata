@@ -125,7 +125,7 @@ module NonGrata
 
 		a, b = UNIXSocket.pair()
 
-		File.open(list.output, "w+") { |fd|
+		File.atomic_write(list.output) { |fd|
 			Process.restrict(EMPTY, USER, GROUP, wait: false) {
 				{% if flag?(:openbsd) %}
 					Process.pledge(:stdio)
