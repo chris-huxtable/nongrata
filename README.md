@@ -1,10 +1,8 @@
 # nongrata
 
-Aggregates multiple IP blacklists, validates each entry and outputs a new, sanitized, and reduced, newline delimited list.
+Aggregates multiple IP blacklists, validates each entry, and outputs a new, sanitized, and reduced, newline delimited list.
 
-`nongrata` is already very safe as it only connects to services you think are reputable. That being said we have to assume it has serious bugs in its own code and that the underlying libraries are exploitable. As such it is privilege separated, `chroot`ed, and on OpenBSD `pledge`d. In the event that someone attempts to exploit a bug they will have trouble, won't get far, or will outright kill the process.
-
-Note: Currently only IPv4 addresses are supported.
+`nongrata` is already very safe as it only connects to services you think are reputable. That being said the assumption has be that it  is exploitable are the underlying libraries. As such `nongrata` is privilege separated, `chroot`ed, and on OpenBSD `pledge`d. If someone attempts to exploit this software they will have trouble, won't get far, or will outright kill the process.
 
 
 ## Installation
@@ -32,6 +30,14 @@ Cron Usage + `pf`:
 nongrata -c && (pfctl -q -t drop -T replace -f /etc/pf.list/drop)
 ```
 
+Help:
+```
+Usage: nongrata [arguments]
+    -f file          Specifies the configuration file. The default is /etc/nongrata.conf.
+    -c, --cron       silences the applications output. Useful for cron.
+    -v, --version    Show the version number.
+    -h, --help       Show this help.
+```
 
 ## Configuration
 
