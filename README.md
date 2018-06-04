@@ -1,4 +1,5 @@
 # nongrata
+[![GitHub release](https://img.shields.io/github/release/chris-huxtable/nongrata.svg)](https://github.com/chris-huxtable/nongrata/releases)
 
 Aggregates multiple IP blacklists, validates each entry, and outputs a new, sanitized, and reduced, newline delimited list.
 
