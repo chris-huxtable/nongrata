@@ -15,6 +15,7 @@
 require "atomic_write"
 require "option_parser"
 require "config"
+require "colorize"
 
 require "ip_address"
 
@@ -57,12 +58,18 @@ module NonGrata
 		OptionParser.parse! { |parser|
 			parser.banner = "Usage: nongrata [arguments]"
 			parser.on("-f file", "Specifies the configuration file. The default is #{config_path}.") { |file| config_path = file }
-			parser.on("-c", "silences the applications output. Useful for cron.") { @@silent = true }
-			parser.on("-h", "--help", "Show this help") { puts parser }
+			parser.on("-c", "--cron", "silences the applications output. Useful for cron.") { @@silent = true }
+			parser.on("-h", "--help", "Show this help.") {
+				puts parser
+				exit(0)
+			}
 		}
 
 		raise "Configuration does not exist." if ( !config_path || config_path.empty? || !File.exists?(config_path) )
 		@@config_path = config_path
+	rescue ex
+		::puts ex.message.colorize(:red)
+		exit(1)
 	end
 
 
@@ -81,6 +88,9 @@ module NonGrata
 			raise "Configuration has errors. No list" if ( !value )
 			@@lists[key] = value
 		}
+	rescue ex
+		::puts ex.message.colorize(:red)
+		exit(1)
 	end
 
 
@@ -91,6 +101,9 @@ module NonGrata
 			process_list(list)
 			puts
 		}
+	rescue ex
+		::puts ex.message.colorize(:red)
+		exit(1)
 	end
 
 	protected def self.process_list(list : List)
