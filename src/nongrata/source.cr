@@ -15,10 +15,14 @@
 require "socket"
 require "http"
 
+
 abstract class NonGrata::Source
 
 	@comment : String|Char = '#'
 	@cache : String? = nil
+
+
+	# MARK: - Factories
 
 	def self.from_config(label : String, config : Config::Any) : self
 		if ( url = config.as_s?() )
@@ -52,12 +56,14 @@ abstract class NonGrata::Source
 
 	# MARK: - Cacheing
 
+	# Cachces the cached content of the source.
 	def cache() : String
 		cache = @cache
 		return cache if cache
 		return recache()
 	end
 
+	# Empties the cache and re-downloads the source.
 	def recache() : String
 		cache = nil
 
@@ -95,6 +101,7 @@ abstract class NonGrata::Source
 		return cache
 	end
 
+	# Empties the cache.
 	def empty_cache()
 		@cache = nil
 	end
@@ -102,6 +109,7 @@ abstract class NonGrata::Source
 
 	# MARK: - Listing
 
+	# Iterates through each entry in the source.
 	def listing(&block : IP::Address|IP::Block -> Nil) : Nil
 		cache.each_line() { |line|
 			address = address_from_line(line)
@@ -114,15 +122,10 @@ abstract class NonGrata::Source
 		}
 	end
 
-	def listing() : Array(IP::Address|IP::Block)
-		list = Array(IP::Address|IP::Block).new()
-		listing() { |entry| list << entry }
-		return list
-	end
-
 
 	# MARK: - Utilities
 
+	# Extracts and address from a given line.
 	protected def address_from_line(line : String) : IP::Address|IP::Block|Array(IP::Block)|Nil
 		return nil if ( !line || line.empty?() )
 		line = strip_comment(line)
@@ -134,6 +137,7 @@ abstract class NonGrata::Source
 		return address
 	end
 
+	# Stripps comments from a line
 	protected def strip_comment(line : String) : String
 		return "" if ( line.starts_with?(@comment) )
 
@@ -143,6 +147,8 @@ abstract class NonGrata::Source
 		return line[0, offset]
 	end
 
+
+	# A `List` type of source
 	class List < Source
 
 		@entry_delimiter : Char|String = '\n'
@@ -167,6 +173,7 @@ abstract class NonGrata::Source
 
 	end
 
+	# A `Table` type of source
 	class Table < List
 
 		@column_delimiter : Char|String = ','
@@ -206,6 +213,7 @@ abstract class NonGrata::Source
 		property column : UInt32
 		property width : UInt32?
 
+		# Extracts and address from a given line.
 		protected def address_from_line(line : String) : IP::Address|IP::Block|Array(IP::Block)|Nil
 			prefix = @prefix
 			return nil if ( prefix && !line.starts_with?(prefix) )

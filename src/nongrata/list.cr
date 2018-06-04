@@ -14,9 +14,10 @@
 
 require "./source"
 
+
 class NonGrata::List
 
-	# MARK: - Constructors
+	# MARK: - Factories
 
 	def self.from_config(label : String, config : Config::Any) : self?
 
@@ -98,16 +99,19 @@ class NonGrata::List
 	getter reject_count : Int32
 
 
-	# MARK: Iterators
+	# MARK: - Iterators
 
+	# Iterates over each address
 	def each_address(&block) : Nil
 		@addresses.each() { |e| yield(e) }
 	end
 
+	# Iterates over each block
 	def each_block(&block) : Nil
 		@blocks.each() { |e| yield(e) }
 	end
 
+	# Iterates over each address and block
 	def each_entry(&block) : Nil
 		@addresses.each() { |e| yield(e) }
 		@blocks.each() { |e| yield(e) }
@@ -116,17 +120,17 @@ class NonGrata::List
 
 	# MARK: - Processing
 
+	# Caches all source data.
 	def acquire(&block) : Nil
-
 		@sources.each() { |source|
 			yield(source)
 			source.cache()
 		}
 	end
 
+	# Processes each source.
 	def process() : Nil
-
-		# MARK: Processing Sources
+		# Processing Sources
 		@sources.each() { |source|
 			source.listing() { |address|
 				@blocks << address		if ( address.is_a?(IP::Block) )
@@ -135,21 +139,21 @@ class NonGrata::List
 			source.empty_cache
 		}
 
-		# MARK: Sorting Results
 		@reject_count = @addresses.size
 
+		# Cleanup
 		@blocks.uniq!()
 		@addresses.uniq!()
 
+		# Sorting Results
 		@blocks.sort!() { |a, b| a <=> b }
 		@addresses.sort!()
 
 		@reject_count -= @addresses.size
 	end
 
+	# Reduces results. Rejecting whitelisted addresses and addresses already included in blocks.
 	def reduce() : Nil
-
-		# MARK: Reducing Results
 		@blocks.reject!() { |block|
 			whitelisted = block_whitelisted?(block)
 			next false if ( !whitelisted )

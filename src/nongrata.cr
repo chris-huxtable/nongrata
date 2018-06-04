@@ -42,7 +42,7 @@ module NonGrata
 
 	if ( !Process.root? )
 		puts "Requires user to be root."
-		exit 1
+		exit(1)
 	end
 
 #	{% if flag?(:openbsd) %}
