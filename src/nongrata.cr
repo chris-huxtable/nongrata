@@ -33,7 +33,8 @@ module NonGrata
 	EMPTY = "/var/empty"
 
 	{% begin %}
-		BUILD = {{ `git log --pretty=format:'%H' -n 1`.stringify }}
+		BUILD = {{ `git log --pretty=format:'%H' -n 1`.stringify }}.chomp
+		VERSION = {{ `git describe --abbrev=0 --tags`.stringify }}.chomp
 	{% end %}
 
 	@@config_path : String = "/etc/nongrata.conf"
@@ -164,7 +165,7 @@ module NonGrata
 	end
 
 	def self.version_string(io : IO)
-		io << 'v' << "0.3.2"
+		io << VERSION
 		io << " (" << BUILD[0..7] << ')'
 	end
 
