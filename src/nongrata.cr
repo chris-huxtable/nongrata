@@ -138,8 +138,7 @@ module NonGrata
 				puts "    - #{list.blocks.size} blocks"
 				puts "    - #{list.reject_count} rejects"
 
-				a << list.header << "\n\n" if list.header
-				list.each_entry() { |entry| a << entry << '\n' }
+				list.write(a)
 			}
 
 			a.close

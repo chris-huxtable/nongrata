@@ -175,6 +175,12 @@ class NonGrata::List
 		}
 	end
 
+	# Writes list to `IO`
+	def write(io : IO) : Nil
+		io << header << "\n\n" if ( header )
+		each_entry() { |entry| io << entry << '\n' }
+	end
+
 
 	# MARK: - Utilities
 
