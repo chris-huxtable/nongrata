@@ -22,24 +22,6 @@ abstract class NonGrata::Source
 	@cache : String? = nil
 
 
-	# MARK: - Factories
-
-	def self.from_config(label : String, config : Config::Any) : self
-		if ( url = config.as_s?() )
-			return Source::List.new(label, url)
-		end
-
-		a_type = config.as_s?("type")
-		a_type = "list" if ( !a_type )
-
-		return case ( a_type.downcase )
-			when "list"		then Source::List.from_config(label, config)
-			when "table"	then Source::Table.from_config(label, config)
-			else raise "Malformed Configuration: Invalid type"
-		end
-	end
-
-
 	# MARK: - Initializer
 
 	def initialize(@label : String, @url : String)

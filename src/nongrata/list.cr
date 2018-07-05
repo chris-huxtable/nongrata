@@ -19,41 +19,6 @@ class NonGrata::List
 
 	# MARK: - Factories
 
-	def self.from_config(label : String, config : Config::Any) : self?
-
-		# Output
-		tmp = config.as_s?("output")
-		return nil if ( !tmp || tmp.empty? )
-		output = File.expand_path(tmp)
-
-		list = build(label, output) { |list|
-
-			# Whitelist
-			if ( whitelist = config.as_a?("whitelist", String) )
-				whitelist = whitelist.map() { |entry|
-					next IP::Address[entry]? || IP::Block[entry]? || raise "Configuration has errors: Whitelist"
-				}
-				list.whitelist = whitelist
-			end
-
-			# Sources
-			sources = config.as_h?("sources")
-			raise "Configuration has errors. No Sources" if ( !sources )
-
-			sources.each() { |key, src_config|
-				list.sources << Source.from_config(key.to_s, src_config)
-			}
-
-			# Header
-			if ( header = config.as_s?("header") )
-				list.header = header
-			end
-
-		}
-
-		return list
-	end
-
 	def self.build(label : String, output : String) : self
 		list = new(label, output)
 		yield(list)
