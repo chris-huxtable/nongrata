@@ -34,16 +34,16 @@ DEBUG_DIR		= fake
 
 build:
 	@mkdir -p bin
-	${CRYSTAL_BIN} build ${PROJECT_SRC} -o ${PROJECT_BIN}/${BIN_NAME}
+	${CRYSTAL_BIN} build ${PROJECT_SRC} -o ${PROJECT_BIN}/${BIN_NAME} --progress --stats
 
 release:
 	@mkdir -p bin
-	${CRYSTAL_BIN} build ${PROJECT_SRC} --release -o ${PROJECT_BIN}/${BIN_NAME}
+	${CRYSTAL_BIN} build ${PROJECT_SRC} --release -o ${PROJECT_BIN}/${BIN_NAME} --progress --stats
 
 debug:
 	@rm -fR ${DEBUG_DIR}
 	@mkdir -p ${DEBUG_DIR}
-	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace -- -f ${DEBUG_CONF}
+	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace --progress --stats -- -f ${DEBUG_CONF}
 
 install: release
 	cp ${PROJECT_BIN}/${BIN_NAME} ${INSTALL_BIN}/${BIN_NAME}
