@@ -21,6 +21,9 @@ dependencies:
   ip_address:
     github: chris-huxtable/ip_address.cr
     commit: HEAD
+  hostname:
+    github: chris-huxtable/hostname.cr
+    commit: HEAD
   pledge:
     github: chris-huxtable/pledge.cr
     commit: HEAD
