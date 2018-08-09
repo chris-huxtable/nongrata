@@ -12,121 +12,65 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-require "atomic_write"
-require "option_parser"
-require "config"
-require "colorize"
-
-require "ip_address"
+require "console"
 
 require "pledge"
 require "restrict"
-require "user_group"
+
+require "atomic_write"
 
 require "./nongrata/*"
 
 
 module NonGrata
 
-	USER = "daemon"
-	GROUP = "daemon"
-	EMPTY = "/var/empty"
-
-	{% begin %}
-		BUILD = {{ `git log --pretty=format:'%H' -n 1`.stringify }}.chomp
-		VERSION = {{ `git describe --abbrev=0 --tags`.stringify }}.chomp
-	{% end %}
-
-	@@config_path : String = "/etc/nongrata.conf"
-	@@silent : Bool = false
-	@@lists : Hash(String, List) = Hash(String, List).new()
-
-	if ( !Process.root? )
-		puts "Requires user to be root."
-		exit(1)
-	end
-
 #	{% if flag?(:openbsd) %}
 #		Process.pledge(:stdio, :rpath, :wpath, :cpath, :flock, :unix, :dns, :getpw, :proc, :id)
 #	{% end %}
 
-	process_args()
-	process_config()
-	process_lists()
+	Console::Error.fatal("Requires user to be root.") if ( !Process.root? )
+	@@config : Configuration = catch { Configuration.default() }
 
-
-	# MARK: - Process Arguements
-
-	protected def self.process_args()
-		config_path = @@config_path
-
-		OptionParser.parse! { |parser|
-			parser.banner = "Usage: nongrata [arguments]"
-			parser.on("-f file", "Specifies the configuration file. The default is #{config_path}.") { |file| config_path = file }
-			parser.on("-c", "--cron", "silences the applications output. Useful for cron.") { @@silent = true }
-			parser.on("-v", "--version", "Show the version number.") {
-				puts "Nongrata #{version_string}"
-				exit(0)
-			}
-			parser.on("-h", "--help", "Show this help.") {
-				puts parser
-				exit(0)
-			}
-		}
-
-		raise "Configuration does not exist." if ( !config_path || config_path.empty? || !File.exists?(config_path) )
-		@@config_path = config_path
-	rescue ex
-		::puts ex.message.colorize(:red)
-		exit(1)
-	end
-
-
-	# MARK: - Process Configuration
-
-	def self.process_config()
-		config = Config.file(@@config_path)
-
-		lists = config.as_h?
-		raise "Configuration has errors." if ( !lists )
-
-		lists.each() { |key, value|
-			next if ( key == "user" || key == "group" )
-
-			value = List.from_config(key, value)
-			raise "Configuration has errors. No list" if ( !value )
-			@@lists[key] = value
-		}
-	rescue ex
-		::puts ex.message.colorize(:red)
-		exit(1)
+	if ( @@config.cron? )
+		success = true
+		buffer = Console.to_buffer() do
+			process_lists()
+		rescue ex
+			success = false
+		end
+		STDOUT << buffer if !success
+	else
+		process_lists()
 	end
 
 
 	# MARK: - Process Lists
 
 	def self.process_lists()
-		@@lists.each{ |key, list|
+		@@config.lists.each{ |key, list|
 			process_list(list)
-			puts
+			Console.newline
 		}
 	rescue ex
-		::puts ex.message.colorize(:red)
-		exit(1)
+		Console::Error.fatal(ex.message)
 	end
 
 	protected def self.process_list(list : List)
 		dir = File.dirname(list.output)
 		Dir.mkdir_p(dir) if ( !File.exists?(dir) )
 
-		puts "#{list.label}"
-		puts "  Acquiring:"
-		list.acquire() { |source| puts "    - #{source.label}" }
+		Console.heading(list.label)
+		Console.line("  Acquiring:")
+		list.acquire() { |source| Console.line("    - ", source.label) }
 
 		a, b = UNIXSocket.pair()
 
+		dir = @@config.empty_dir
+		user = @@config.user
+		group = @@config.group
+
 		File.atomic_write(list.output) { |fd|
-			Process.restrict(EMPTY, USER, GROUP, wait: false) {
+			Process.restrict(dir, user, group, wait: false) {
 				{% if flag?(:openbsd) %}
 					Process.pledge(:stdio)
 				{% end %}
@@ -134,10 +78,10 @@ module NonGrata
 				list.process()
 				list.reduce()
 
-				puts "  Counts:"
-				puts "    - #{list.addresses.size} addresses"
-				puts "    - #{list.blocks.size} blocks"
-				puts "    - #{list.reject_count} rejects"
+				Console.line("  Counts:")
+				Console.line("    - ", list.addresses.size, " addresses")
+				Console.line("    - ", list.blocks.size, " blocks")
+				Console.line("    - ", list.reject_count, " rejects")
 
 				list.write(a)
 			}
@@ -146,8 +90,8 @@ module NonGrata
 			IO.copy(b, fd)
 			b.close
 
-			puts "  Writing:"
-			puts "    - Wrote Results: #{list.output}"
+			Console.line("  Writing:")
+			Console.line("    - Wrote Results: ", list.output)
 		}
 	ensure
 		a.close if ( a )
@@ -155,26 +99,12 @@ module NonGrata
 	end
 
 
-	# MARK: - Properties
+	# MARK: - Utilities
 
-	class_property silent : Bool
-	class_property config_path : String
-
-	def self.version_string()
-		return String.build() { |io| version_string(io) }
-	end
-
-	def self.version_string(io : IO)
-		io << VERSION
-		io << " (" << BUILD[0..7] << ')'
-	end
-
-
-	# MARK: - Tools
-
-	def self.puts(*string)
-		return if ( @@silent )
-		STDOUT.puts(*string)
+	def self.catch(&block)
+		return yield()
+	rescue ex
+		Console::Error.fatal(ex.message)
 	end
 
 end

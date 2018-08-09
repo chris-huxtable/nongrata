@@ -18,6 +18,10 @@ require "http"
 
 abstract class NonGrata::Source
 
+	alias Address = IP::Address
+	alias Block = IP::Block
+	alias Entry = IP::Address|IP::Block
+
 	@comment : String|Char = '#'
 	@cache : String? = nil
 
@@ -50,7 +54,7 @@ abstract class NonGrata::Source
 		cache = nil
 
 		UNIXSocket.pair { |rooted, forked|
-			proc = Process.restrict(user: NonGrata::USER, group: NonGrata::GROUP, wait: false) {
+			proc = Process.restrict(user: Configuration::USER, group: Configuration::GROUP, wait: false) {
 
 				{% if flag?(:openbsd) %}
 					Process.pledge(:stdio, :rpath, :wpath, :inet, :dns)
@@ -58,7 +62,7 @@ abstract class NonGrata::Source
 
 				HTTP::Client.get(@url) { |responce|
 					IO.copy(responce.body_io, forked)
-					forked.puts("\0")
+					forked.puts('\0')
 				}
 
 				forked.close
@@ -92,7 +96,7 @@ abstract class NonGrata::Source
 	# MARK: - Listing
 
 	# Iterates through each entry in the source.
-	def listing(&block : IP::Address|IP::Block -> Nil) : Nil
+	def listing(&block : Entry -> Nil) : Nil
 		cache.each_line() { |line|
 			address = address_from_line(line)
 			next if ( !address )
@@ -108,13 +112,14 @@ abstract class NonGrata::Source
 	# MARK: - Utilities
 
 	# Extracts and address from a given line.
-	protected def address_from_line(line : String) : IP::Address|IP::Block|Array(IP::Block)|Nil
+	protected def address_from_line(line : String) : Entry|Array(Block)|Nil
 		return nil if ( !line || line.empty?() )
 		line = strip_comment(line)
 		line = line.strip()
+
 		return nil if ( line.empty?() )
-		address = IP::Address[line]?
-		address = IP::Block[line]? if !address
+		address = Address[line]?
+		address = Block[line]? if !address
 
 		return address
 	end
@@ -196,7 +201,7 @@ abstract class NonGrata::Source
 		property width : UInt32?
 
 		# Extracts and address from a given line.
-		protected def address_from_line(line : String) : IP::Address|IP::Block|Array(IP::Block)|Nil
+		protected def address_from_line(line : String) : Entry|Array(Block)|Nil
 			prefix = @prefix
 			return nil if ( prefix && !line.starts_with?(prefix) )
 
@@ -212,13 +217,13 @@ abstract class NonGrata::Source
 			return nil if !address
 
 			width = @width
-			return address if address.is_a?(IP::Block)
+			return address if address.is_a?(Block)
 			return address if !width
 			count = line[width].to_i
 			size = address.width - Math.log2(count).floor
 			floor = size.floor.to_i32
 
-			return IP::Block.new?(address, floor)
+			return Block.new?(address, floor)
 		end
 
 	end

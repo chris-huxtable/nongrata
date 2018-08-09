@@ -14,8 +14,15 @@
 
 require "./source"
 
+require "ip_address"
+
 
 class NonGrata::List
+
+	alias Address = IP::Address
+	alias Block = IP::Block
+	alias Entry = IP::Address|IP::Block
+
 
 	# MARK: - Factories
 
@@ -44,10 +51,10 @@ class NonGrata::List
 	@header : String? = nil
 
 	@sources	= Array(Source).new()
-	@whitelist	= Array(IP::Address|IP::Block).new()
+	@whitelist	= Array(Entry).new()
 
-	@blocks		= Array(IP::Block).new()
-	@addresses	= Array(IP::Address).new()
+	@blocks		= Array(Block).new()
+	@addresses	= Array(Address).new()
 
 	@reject_count = 0_i32
 
@@ -56,10 +63,10 @@ class NonGrata::List
 	property header : String?
 
 	property sources : Array(Source)
-	property whitelist : Array(IP::Address|IP::Block)
+	property whitelist : Array(Entry)
 
-	getter blocks : Array(IP::Block)
-	getter addresses : Array(IP::Address)
+	getter blocks : Array(Block)
+	getter addresses : Array(Address)
 
 	getter reject_count : Int32
 
@@ -67,17 +74,17 @@ class NonGrata::List
 	# MARK: - Iterators
 
 	# Iterates over each address
-	def each_address(&block) : Nil
+	def each_address(&block : Address -> Nil) : Nil
 		@addresses.each() { |e| yield(e) }
 	end
 
 	# Iterates over each block
-	def each_block(&block) : Nil
+	def each_block(&block : Block -> Nil) : Nil
 		@blocks.each() { |e| yield(e) }
 	end
 
 	# Iterates over each address and block
-	def each_entry(&block) : Nil
+	def each_entry(&block : Entry -> Nil) : Nil
 		@addresses.each() { |e| yield(e) }
 		@blocks.each() { |e| yield(e) }
 	end
@@ -98,8 +105,8 @@ class NonGrata::List
 		# Processing Sources
 		@sources.each() { |source|
 			source.listing() { |address|
-				@blocks << address		if ( address.is_a?(IP::Block) )
-				@addresses << address	if ( address.is_a?(IP::Address) )
+				@blocks << address		if ( address.is_a?(Block) )
+				@addresses << address	if ( address.is_a?(Address) )
 			}
 			source.empty_cache
 		}
@@ -129,7 +136,7 @@ class NonGrata::List
 
 		@addresses.reject!() { |address|
 			value = @whitelist.bsearch { |whitelisted|
-				next ( whitelisted == address ) if ( whitelisted.is_a?(IP::Address) )
+				next ( whitelisted == address ) if ( whitelisted.is_a?(Address) )
 				next whitelisted.includes?(address)
 			}
 			next false if ( value.nil? )

@@ -30,3 +30,6 @@ dependencies:
   user_group:
     github: chris-huxtable/user_group.cr
     commit: HEAD
+  console:
+    github: chris-huxtable/console.cr
+    commit: HEAD

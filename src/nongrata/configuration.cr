@@ -12,6 +12,113 @@
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
+require "option_parser"
+require "config"
+
+require "user_group"
+
+
+class NonGrata::Configuration
+
+	{% begin %}
+		BUILD = {{ `git log --pretty=format:'%H' -n 1`.stringify }}.chomp
+		VERSION = {{ `git describe --abbrev=0 --tags`.stringify }}.chomp
+	{% end %}
+
+	USER = System::User.get("daemon")
+	GROUP = System::Group.get("daemon")
+	EMPTY = "/var/empty"
+
+
+	# MARK: - Default Configuration
+
+	@@default : self?
+
+	def self.default() : self
+		default = @@default
+		return default if default
+
+		default = new()
+		@@default = default
+		return default
+	end
+
+	@path : String = "/etc/nongrata.conf"
+	@lists : Hash(String, List) = Hash(String, List).new()
+
+	@cron : Bool = false
+	@verbose : Bool = false
+
+
+	# MARK: - Initialization
+
+	def initialize()
+
+		OptionParser.parse! { |parser|
+			parser.banner = "Usage: nongrata [arguments]"
+			parser.on("-f file", "Specifies the configuration file. The default is #{@path}.") { |file| @path = file }
+			parser.on("-c", "--cron", "silences the applications output. Useful for cron.") { @cron = true }
+			parser.on("-v", "--version", "Show the version number.") {
+				Console.line("Nongrata", Configuration.version_string)
+				exit(0)
+			}
+			parser.on("-h", "--help", "Show this help.") {
+				Console.line(parser)
+				exit(0)
+			}
+		}
+
+		raise "Configuration does not exist." if ( !@path || @path.empty? || !File.exists?(@path) )
+
+		config = Config.file(@path)
+
+		lists = config.as_h?
+		raise "Configuration has errors." if ( !lists )
+
+		lists.each() { |key, value|
+			next if ( key == "user" || key == "group" )
+			value = List.from_config(key, value)
+			raise "Configuration has errors. No list" if ( !value )
+			@lists[key] = value
+		}
+
+	end
+
+
+	# MARK: - Properties
+
+	getter path : String
+	getter lists : Hash(String, List)
+
+	getter? cron : Bool
+	getter? verbose : Bool
+
+	def user() : System::User
+		return USER
+	end
+
+	def group() : System::Group
+		return GROUP
+	end
+
+	def empty_dir() : String
+		return EMPTY
+	end
+
+
+	# MARK: - Versioning
+
+	def self.version_string() : String
+		return String.build() { |io| version_string(io) }
+	end
+
+	def self.version_string(io : IO)
+		io << VERSION
+		io << " (" << BUILD[0..7] << ')'
+	end
+
+end
+
 
 class NonGrata::List
 
@@ -25,7 +132,7 @@ class NonGrata::List
 		list = build(label, output) { |list|
 
 			# Whitelist
-			if ( whitelist = config.as_a?("whitelist", String) )
+			if ( whitelist = config.as_a?("whitelist", each_as: String) )
 				new_whitelist = Array(IP::Address|IP::Block).new(whitelist.size)
 				whitelist.each() { |entry|
 					entry = IP::Address[entry]? || IP::Block[entry]?

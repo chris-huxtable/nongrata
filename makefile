@@ -43,7 +43,7 @@ release:
 debug:
 	@rm -fR ${DEBUG_DIR}
 	@mkdir -p ${DEBUG_DIR}
-	${CRYSTAL_BIN} run ${PROJECT_SRC} --debug --error-trace --progress --stats -- -f ${DEBUG_CONF}
+	${CRYSTAL_BIN} run ${PROJECT_SRC} --progress --stats -- -f ${DEBUG_CONF}
 
 install: release
 	cp ${PROJECT_BIN}/${BIN_NAME} ${INSTALL_BIN}/${BIN_NAME}
