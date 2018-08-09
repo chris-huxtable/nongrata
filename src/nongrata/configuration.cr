@@ -57,7 +57,7 @@ class NonGrata::Configuration
 		OptionParser.parse! { |parser|
 			parser.banner = "Usage: nongrata [arguments]"
 			parser.on("-f file", "Specifies the configuration file. The default is #{@path}.") { |file| @path = file }
-			parser.on("-c", "--cron", "silences the applications output. Useful for cron.") { @cron = true }
+			parser.on("-c", "--cron", "Silences the applications output unless there is an error. Useful for cron.") { @cron = true }
 			parser.on("-v", "--version", "Show the version number.") {
 				Console.line("Nongrata", Configuration.version_string)
 				exit(0)

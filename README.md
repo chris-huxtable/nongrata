@@ -35,7 +35,7 @@ Help:
 ```
 Usage: nongrata [arguments]
     -f file          Specifies the configuration file. The default is /etc/nongrata.conf.
-    -c, --cron       silences the applications output. Useful for cron.
+    -c, --cron       Silences the applications output unless there is an error. Useful for cron.
     -v, --version    Show the version number.
     -h, --help       Show this help.
 ```
@@ -47,7 +47,7 @@ There are included sample configurations under the sample subdirectory.
 I recommend whitelisting your LAN block, WAN address, and any other known good addresses or blocks. This will prevent them from being on the resultant list.
 
 ### Lists:
-The configuration is a collection of named lists you would like to construct. Each List should contain an `output` where the list will be written and optionally a `whitelist`, which can contain addresses or address blocks which will not be allowed in the resulting list. Additioanlly It needs to contain a collection of named sources from which to get the source data.
+The configuration is a collection of named lists you would like to construct. Each List should contain an `output` where the list will be written and optionally a `whitelist`, which can contain addresses or address blocks which will not be allowed in the resulting list. Additionally It needs to contain a collection of named sources from which to get the source data.
 
 - `output`: *string*
 - `whitelist`: \[ *optional*, *list*, *of*, *addresses*, *and*, *blocks* \]
@@ -69,8 +69,8 @@ A source which is a `list` is (by default) a newline delimited list of addresses
 
 - `url`: *url string*
 - `type`: list
-- `delimiter`: *string* # by default \n
-- `comment`: *string* # by defualt \#
+- `delimiter`: *string* - by default \n
+- `comment`: *string* - by default \#
 
 ```
 Spamhaus: {
@@ -80,15 +80,15 @@ Spamhaus: {
 }
 ```
 
-A source which is a `table` is  a table with newline delimited rows where a column contains an address or  block. With this type you also have the option of selecting the column whcih will be interpreted as an address or block with the `column` key (by default 0), the column delimiter with the `delimiter` key (by default a comma),  the  comment style with the `comment` key (by default a `#`), and selectors of a line based on the lines prefix, or suffix using the keys `prefix`, and `suffix` respectivly.
+A source which is a `table` is  a table with newline delimited rows where a column contains an address or  block. With this type you also have the option of selecting the column whcih will be interpreted as an address or block with the `column` key (by default 0), the column delimiter with the `delimiter` key (by default a comma),  the  comment style with the `comment` key (by default a `#`), and selectors of a line based on the lines prefix, or suffix using the keys `prefix`, and `suffix` respectively.
 
 - `url`: *url string*
 - `type`: table
-- `column`: *integer* # 0-n
-- `delimiter`: *string* # by default ,
-- `comment`: *string* # by defualt \#
-- `prefix`:  *string* # disabled by default
-- `suffix`: *string* # disabled by default
+- `column`: *integer*
+- `delimiter`: *string* - by default ,
+- `comment`: *string* - by default \#
+- `prefix`:  *string* or *null* - disabled by default
+- `suffix`: *string* or *null* - disabled by default
 
 ```
 Tor: {
