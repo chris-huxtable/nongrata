@@ -59,7 +59,7 @@ class NonGrata::Configuration
 			parser.on("-f file", "Specifies the configuration file. The default is #{@path}.") { |file| @path = file }
 			parser.on("-c", "--cron", "Silences the applications output unless there is an error. Useful for cron.") { @cron = true }
 			parser.on("-v", "--version", "Show the version number.") {
-				Console.line("Nongrata", Configuration.version_string)
+				Console.line("Nongrata ", Configuration.version_string)
 				exit(0)
 			}
 			parser.on("-h", "--help", "Show this help.") {
