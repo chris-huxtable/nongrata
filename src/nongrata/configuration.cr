@@ -21,8 +21,8 @@ require "user_group"
 class NonGrata::Configuration
 
 	{% begin %}
-		BUILD = {{ `git log --pretty=format:'%H' -n 1`.stringify }}.chomp
-		VERSION = {{ `git describe --abbrev=0 --tags`.stringify }}.chomp
+		BUILD = {{ `git log --pretty=format:'%H' -n 1`.stringify.chomp }}
+		VERSION = {{ `shards version`.stringify.chomp }}
 	{% end %}
 
 	USER = System::User.get("daemon")
