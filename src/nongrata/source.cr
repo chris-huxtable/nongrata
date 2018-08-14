@@ -14,7 +14,7 @@
 
 require "socket"
 require "http"
-
+require "zlib"
 
 abstract class NonGrata::Source
 
@@ -26,16 +26,20 @@ abstract class NonGrata::Source
 	@cache : String? = nil
 
 
+	def self.new(label : String, url : String)
+		return new(label, URI.parse(url))
+	end
+
 	# MARK: - Initializer
 
-	def initialize(@label : String, @url : String)
+	def initialize(@label : String, @url : URI)
 	end
 
 
 	# MARK: - Properties
 
 	getter label : String
-	getter url : String
+	getter url : URI
 
 	property comment : String|Char
 
@@ -60,8 +64,13 @@ abstract class NonGrata::Source
 					Process.pledge(:stdio, :rpath, :wpath, :inet, :dns)
 				{% end %}
 
-				HTTP::Client.get(@url) { |responce|
-					IO.copy(responce.body_io, forked)
+				HTTP::Client.get(@url.to_s) { |responce|
+					path = @url.path
+					if ( path && path.ends_with?(".gz") )
+						IO.copy(Gzip::Reader.new(responce.body_io, true), forked)
+					else
+						IO.copy(responce.body_io, forked)
+					end
 					forked.puts('\0')
 				}
 
